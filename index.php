@@ -1,4 +1,5 @@
 <?php include 'inc_header.php';?>
+<?php include_once 'database_setup.php';?>
 
 <div class="container text-center">
   <button class="btn btn-primary" onclick="window.location.href = 'login.php'">Login</button>
