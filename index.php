@@ -5,17 +5,32 @@ session_start();
 
 
 <div class="container text-center">
-  <?php if (!isset($_SESSION['email'])) { ?>
-    <!-- before login -->
+  <?php
+  if (!isset($_SESSION['email'])) {
+    // Before login
+  ?>
     <button class="btn btn-primary" onclick="window.location.href = 'login.php'">Login</button>
     <button class="btn btn-success" onclick="window.location.href = 'register.php'">Register</button>
-  <?php } else { ?>
-    <!-- after login -->
+  <?php
+  } else {
+    // After login
+    $result = $db->query('SELECT role FROM users WHERE email = "' . $_SESSION['email'] . '"');
+    $row = $result->fetchArray();
+    $role = $row['role'];
+  ?>
     <h4>Logged in with <?php echo $_SESSION['email']; ?></h4>
     <form action="logout.php" method="post">
       <button type="submit" class="btn btn-danger">Logout</button>
     </form>
-  <?php } ?>
+    <?php
+    // Show Manage Users button if the user is an admin
+    if ($role == 'admin') {
+    ?>
+      <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
+  <?php
+    }
+  }
+  ?>
 </div>
 
 <footer class="footer bg-light mt-4">
