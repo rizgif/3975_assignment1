@@ -14,9 +14,10 @@ session_start();
   <?php
   } else {
     // After login
-    $result = $db->query('SELECT role FROM users WHERE email = "' . $_SESSION['email'] . '"');
+    $result = $db->query('SELECT role, isApproved FROM users WHERE email = "' . $_SESSION['email'] . '"');
     $row = $result->fetchArray();
     $role = $row['role'];
+    $isApproved = $row['isApproved']
   ?>
     <div class="text-right">
       <h4>Logged in with <?php echo $_SESSION['email']; ?></h4>
@@ -27,7 +28,15 @@ session_start();
       // Show Manage Users button if the user is an admin
       if ($role == 'admin') {
       ?>
-        <button class="btn btn-primary" onclick="window.location.href = 'admin.php'">Manage Users</button>
+        <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
+      <?php
+      }
+      ?>
+      <?php
+      // Show Go To Transactions button if the user is an admin or the user is approved
+      if ($role == 'admin' || $isApproved) {
+      ?>
+        <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
       <?php
       }
       ?>
@@ -35,7 +44,6 @@ session_start();
   <?php
   }
   ?>
-  <button class="btn" onclick="window.location.href = 'transactions.php'">Go to Transactions</button>
 </div>
 
 <footer class="footer bg-light mt-4">
