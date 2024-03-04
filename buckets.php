@@ -24,11 +24,6 @@ function insert_data_into_buckets_table($db, $filePath) {
     }
 }
 
-// Check if the buckets table is empty, if so, insert data
-if (is_buckets_table_empty($db)) {
-    $filePath = "uploads/2023 02.imported.csv"; // Corrected file path
-    insert_data_into_buckets_table($db, $filePath);
-}
 ?>
 
 <!-- Display buckets list -->

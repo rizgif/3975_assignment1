@@ -49,6 +49,8 @@ $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
               <input type="submit" value="Upload Files" name="submit" class="btn btn-secondary">
           </form>
         </div>
+        <!-- Add the Generate Report button -->
+        <button type="button" class="btn btn-success mt-3" onclick="generateReport()">Reports</button>
       <?php
       }
       ?>
@@ -73,3 +75,11 @@ $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
 </footer>
 
 <?php include 'inc_footer.php'; ?>
+
+<!-- JavaScript function to handle report generation -->
+<script>
+  function generateReport() {
+    // Redirect to the report generation page
+    window.location.href = 'generate_report.php';
+  }
+</script>

@@ -33,28 +33,34 @@ function create_tables() {
 
     // Create buckets table
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
-                id INTEGER PRIMARY KEY,
-                category TEXT,
-                name TEXT
-            )');
+        id INTEGER PRIMARY KEY,
+        category TEXT,
+        name TEXT
+    )');
 
     // Close database connection
     $db->close();
 }
 
-// Function to import CSV to SQLite
-function import_csv_to_database($filePath) {
+// Function to import CSV to SQLite for buckets table
+function import_csv_to_buckets_table($filePath) {
     $db = new SQLite3('mydatabase.db');
+
+    // Define the list of categories
+    $categories = array("Entertainment", "Communication", "Groceries", "Donations", "Car Insurance", "Gas Heating");
 
     if (($handle = fopen($filePath, "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $date = SQLite3::escapeString($data[0]);
-            $description = SQLite3::escapeString(trim($data[1]));
-            $debit = SQLite3::escapeString($data[2] === '' ? '0' : $data[2]);
-            $credit = SQLite3::escapeString($data[3] === '' ? '0' : $data[3]);
-            $balance = SQLite3::escapeString($data[4] === '' ? '0' : $data[4]);
+            // Assuming each entry in the CSV file is in the format: date, name, amount, balance
+            if (count($data) >= 2) {
+                $name = SQLite3::escapeString(trim($data[1])); // Get the name field
 
-            $db->exec("INSERT INTO transactions (date, description, debit, credit, balance) VALUES ('$date', '$description', $debit, $credit, $balance)");
+                // Generate a random category from the list of categories
+                $category = $categories[array_rand($categories)];
+
+                // Insert data into buckets table
+                $db->exec("INSERT INTO buckets (category, name) VALUES ('$category', '$name')");
+            }
         }
         fclose($handle);
     }
@@ -62,7 +68,12 @@ function import_csv_to_database($filePath) {
     $db->close();
 }
 
+
 // Call the function to create tables when the script runs
 create_tables();
+
+// Call the function to import CSV data into the buckets table
+$csvFilePath = 'uploads/2023 02.imported.csv'; // Update with your CSV file path
+import_csv_to_buckets_table($csvFilePath);
 
 ?>

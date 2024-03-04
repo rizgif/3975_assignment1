@@ -19,7 +19,7 @@ foreach ($_FILES["filesToUpload"]["name"] as $key => $name) {
         $uploadOk = 0;
     }
 
-    // Allow certain file formats
+    // Allow only CSV file formats
     if ($imageFileType != "csv") {
         echo "Sorry, only CSV files are allowed: $name<br>";
         $uploadOk = 0;
@@ -37,4 +37,7 @@ foreach ($_FILES["filesToUpload"]["name"] as $key => $name) {
         }
     }
 }
+
+// Display button to return to index.php
+echo '<a href="index.php"><button>Back to Home</button></a>';
 ?>
