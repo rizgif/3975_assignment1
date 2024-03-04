@@ -18,19 +18,24 @@ session_start();
     $row = $result->fetchArray();
     $role = $row['role'];
   ?>
-    <h4>Logged in with <?php echo $_SESSION['email']; ?></h4>
-    <form action="logout.php" method="post">
-      <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
-    <?php
-    // Show Manage Users button if the user is an admin
-    if ($role == 'admin') {
-    ?>
-      <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
+    <div class="text-right">
+      <h4>Logged in with <?php echo $_SESSION['email']; ?></h4>
+      <form action="logout.php" method="post" style="display: inline-block;">
+        <button type="submit" class="btn btn-danger">Logout</button>
+      </form>
+      <?php
+      // Show Manage Users button if the user is an admin
+      if ($role == 'admin') {
+      ?>
+        <button class="btn btn-primary" onclick="window.location.href = 'admin.php'">Manage Users</button>
+      <?php
+      }
+      ?>
+    </div>
   <?php
-    }
   }
   ?>
+  <button class="btn" onclick="window.location.href = 'transactions.php'">Go to Transactions</button>
 </div>
 
 <footer class="footer bg-light mt-4">
