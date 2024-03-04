@@ -7,12 +7,12 @@ function create_tables() {
 
     // Create users table
     $db->exec('CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                email TEXT NOT NULL UNIQUE,
-                password TEXT NOT NULL,
-                role TEXT NOT NULL DEFAULT "user",
-                isApproved BOOLEAN NOT NULL DEFAULT FALSE
-            )');
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT "user",
+        isApproved BOOLEAN NOT NULL DEFAULT FALSE
+    )');
 
     // Insert admin account
     $result = $db->query('SELECT COUNT(*) as count FROM users WHERE role = "admin"');
