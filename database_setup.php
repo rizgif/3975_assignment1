@@ -11,16 +11,11 @@ function createTables($db) {
     )');
 
     // Check for existing admin account
-    $stmt = $db->prepare('SELECT COUNT(*) as count FROM users WHERE role = ?');
-    $stmt->bindValue(1, "admin", SQLITE3_TEXT);
-    $result = $stmt->execute();
+    $result = $db->query('SELECT COUNT(*) as count FROM users WHERE role = "admin"');
     $row = $result->fetchArray();
     if ($row['count'] == 0) {
         $hashedPassword = password_hash("P@\$\$w0rd", PASSWORD_DEFAULT);
-        $stmt = $db->prepare('INSERT INTO users (email, password, role, isApproved) VALUES (?, ?, "admin", TRUE)');
-        $stmt->bindValue(1, "aa@aa.aa", SQLITE3_TEXT);
-        $stmt->bindValue(2, $hashedPassword, SQLITE3_TEXT);
-        $stmt->execute();
+        $db->exec('INSERT INTO users (email, password, role, isApproved) VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", 1)');
     }
 
     // Create transactions table
@@ -31,18 +26,28 @@ function createTables($db) {
         amount REAL
     )');
 
-    // Create filters table
-    $db->exec('CREATE TABLE IF NOT EXISTS filters (
-        category TEXT,
-        keyword TEXT PRIMARY KEY
-    )');
+    // Define categories and corresponding keywords
+    $categoriesAndKeywords = [
+        'Groceries' => ['SAFEWAY', 'REAL CDN SUPERS', 'WALMART', 'COSTCO WHOLESAL'],
+        'Utilities' => ['FORTISBC GAS', 'SHAW CABLE', 'ROGERS MOBILE'],
+        'Donations' => ['RED CROSS', 'World Vision'],
+        'Eating Out' => ['ST JAMES RESTAURAT', 'Subway', 'PUR & SIMPLE RESTAUR', 'MCDONALDS', 'WHITE SPOT RESTAURAN', 'TIM HORTONS'],
+        'Health' => ['GATEWAY MSP'],
+        'Other' => ['ICBC INS', 'CANADIAN TIRE', '7-ELEVEN', 'O.D.P. FEE', 'MONTHLY ACCOUNT FEE']
+    ];
 
-    // Add this line to create the buckets table
+    // Create the buckets table
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         category TEXT,
         description TEXT
     )');
+
+    // Insert unique categories into the buckets table
+    foreach ($categoriesAndKeywords as $category => $keywords) {
+        $description = implode(', ', $keywords);
+        $db->exec('INSERT INTO buckets (category, description) VALUES ("' . $category . '", "' . $description . '")');
+    }
 }
 
 ?>
