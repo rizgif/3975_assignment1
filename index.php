@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include 'inc_header.php';
 session_start();
 $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
@@ -17,7 +20,7 @@ $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
     $result = $db->query('SELECT role, isApproved FROM users WHERE email = "' . $_SESSION['email'] . '"');
     $row = $result->fetchArray();
     $role = $row['role'];
-    $isApproved = $row['isApproved']; // Added missing semicolon here
+    $isApproved = $row['isApproved'];
   ?>
     <div class="text-right">
       <h4>Logged in as <?php echo $_SESSION['email']; ?></h4>
@@ -35,13 +38,13 @@ $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
       if ($role == 'admin' || $isApproved) {
       ?>
         <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
-        <!-- File Upload Form for Admins or Approved Users -->
+        <!-- Modified File Upload Form for Admins or Approved Users to accept multiple files -->
         <div class="upload-section mt-4">
-          <h5>Upload a CSV File:</h5>
+          <h5>Upload CSV Files:</h5>
           <form action="upload.php" method="post" enctype="multipart/form-data">
-              Select CSV file to upload:
-              <input type="file" name="fileToUpload" id="fileToUpload" accept=".csv">
-              <input type="submit" value="Upload File" name="submit" class="btn btn-secondary">
+              Select CSV files to upload:
+              <input type="file" name="filesToUpload[]" id="filesToUpload" accept=".csv" multiple>
+              <input type="submit" value="Upload Files" name="submit" class="btn btn-secondary">
           </form>
         </div>
       <?php
