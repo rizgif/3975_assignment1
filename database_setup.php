@@ -23,12 +23,14 @@ function create_tables() {
         $db->exec('INSERT INTO users (email, password, role, isApproved) VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", TRUE)');
     }
 
-    // Create transactions table
+    // Adjusted transactions table to match the CSV schema
     $db->exec('CREATE TABLE IF NOT EXISTS transactions (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT,
                 description TEXT,
-                amount REAL
+                debit REAL DEFAULT 0,
+                credit REAL DEFAULT 0,
+                balance REAL DEFAULT 0
             )');
 
     // Create buckets table
@@ -39,6 +41,26 @@ function create_tables() {
             )');
 
     // Close database connection
+    $db->close();
+}
+
+// Function to import CSV to SQLite
+function import_csv_to_database($filePath) {
+    $db = new SQLite3('mydatabase.db');
+
+    if (($handle = fopen($filePath, "r")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            $date = SQLite3::escapeString($data[0]);
+            $description = SQLite3::escapeString(trim($data[1]));
+            $debit = SQLite3::escapeString($data[2] === '' ? '0' : $data[2]);
+            $credit = SQLite3::escapeString($data[3] === '' ? '0' : $data[3]);
+            $balance = SQLite3::escapeString($data[4] === '' ? '0' : $data[4]);
+
+            $db->exec("INSERT INTO transactions (date, description, debit, credit, balance) VALUES ('$date', '$description', $debit, $credit, $balance)");
+        }
+        fclose($handle);
+    }
+
     $db->close();
 }
 

@@ -1,8 +1,8 @@
 <?php
 include 'inc_header.php';
 session_start();
+$db = new SQLite3('mydatabase.db'); // Ensure database connection is available
 ?>
-
 
 <div class="container text-center">
   <?php
@@ -17,10 +17,10 @@ session_start();
     $result = $db->query('SELECT role, isApproved FROM users WHERE email = "' . $_SESSION['email'] . '"');
     $row = $result->fetchArray();
     $role = $row['role'];
-    $isApproved = $row['isApproved']
+    $isApproved = $row['isApproved']; // Added missing semicolon here
   ?>
     <div class="text-right">
-      <h4>Logged in with <?php echo $_SESSION['email']; ?></h4>
+      <h4>Logged in as <?php echo $_SESSION['email']; ?></h4>
       <form action="logout.php" method="post" style="display: inline-block;">
         <button type="submit" class="btn btn-danger">Logout</button>
       </form>
@@ -31,12 +31,19 @@ session_start();
         <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
       <?php
       }
-      ?>
-      <?php
       // Show Go To Transactions button if the user is an admin or the user is approved
       if ($role == 'admin' || $isApproved) {
       ?>
         <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
+        <!-- File Upload Form for Admins or Approved Users -->
+        <div class="upload-section mt-4">
+          <h5>Upload a CSV File:</h5>
+          <form action="upload.php" method="post" enctype="multipart/form-data">
+              Select CSV file to upload:
+              <input type="file" name="fileToUpload" id="fileToUpload" accept=".csv">
+              <input type="submit" value="Upload File" name="submit" class="btn btn-secondary">
+          </form>
+        </div>
       <?php
       }
       ?>
