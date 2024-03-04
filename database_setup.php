@@ -23,15 +23,13 @@ function create_tables() {
         $db->exec('INSERT INTO users (email, password, role, isApproved) VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", TRUE)');
     }
 
-    // Adjusted transactions table to match the CSV schema
+    // Create transactions table
     $db->exec('CREATE TABLE IF NOT EXISTS transactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT,
-                description TEXT,
-                debit REAL DEFAULT 0,
-                credit REAL DEFAULT 0,
-                balance REAL DEFAULT 0
-            )');
+        id INTEGER PRIMARY KEY,
+        date TEXT,
+        description TEXT,
+        amount REAL
+    )');
 
     // Create buckets table
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
