@@ -1,12 +1,11 @@
 <?php
-// SQLite database file path
-$databaseFile = 'mydatabase.db';
-
-// Establish a connection to the SQLite database
-$db = new SQLite3($databaseFile);
-
-// Check if the connection was successful
-if (!$db) {
-    die("Connection to database failed.");
+// database_connection.php
+function getDatabaseConnection() {
+    $databaseFile = 'mydatabase.db';
+    $db = new SQLite3($databaseFile);
+    if (!$db) {
+        die("Connection to database failed: " . $db->lastErrorMsg());
+    }
+    return $db;
 }
 ?>

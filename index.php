@@ -3,8 +3,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include 'inc_header.php';
+include 'database_connection.php';
+
 session_start();
-$db = new SQLite3('mydatabase.db'); // Ensure database connection is available
+$db = getDatabaseConnection();
+createTables($db);   // Ensure database connection is available
 ?>
 
 <div class="container text-center">
