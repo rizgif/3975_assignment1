@@ -38,6 +38,8 @@ $db = new SQLite3('mydatabase.db'); // Ensure database connection is available
       if ($role == 'admin' || $isApproved) {
       ?>
         <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
+        <!-- Add the Go To Buckets Data button -->
+        <button type="button" class="btn btn-primary" onclick="location.href='buckets.php'">Go To Buckets Data</button>
         <!-- Modified File Upload Form for Admins or Approved Users to accept multiple files -->
         <div class="upload-section mt-4">
           <h5>Upload CSV Files:</h5>
