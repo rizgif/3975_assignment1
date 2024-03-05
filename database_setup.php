@@ -7,7 +7,10 @@ function createTables($db) {
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         role TEXT NOT NULL DEFAULT "user",
-        isApproved BOOLEAN NOT NULL DEFAULT FALSE
+        can_login BOOLEAN NOT NULL DEFAULT FALSE,
+        can_access_transaction BOOLEAN NOT NULL DEFAULT FALSE,
+        can_access_bucket BOOLEAN NOT NULL DEFAULT FALSE,
+        can_access_report BOOLEAN NOT NULL DEFAULT FALSE
     )');
 
     // Check for existing admin account
@@ -15,7 +18,8 @@ function createTables($db) {
     $row = $result->fetchArray();
     if ($row['count'] == 0) {
         $hashedPassword = password_hash("P@\$\$w0rd", PASSWORD_DEFAULT);
-        $db->exec('INSERT INTO users (email, password, role, isApproved) VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", 1)');
+        $db->exec('INSERT INTO users (email, password, role, can_login, can_access_transaction, can_access_bucket, can_access_report) 
+        VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", 1, 1, 1, 1)');
     }
 
     // Create transactions table

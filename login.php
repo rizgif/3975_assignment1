@@ -23,22 +23,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($result && $row = $result->fetchArray()) {
     // Verify the hashed password
     if (password_verify($password, $row['password'])) {
-      // User authenticated
-      $_SESSION['email'] = $email;
-      header('Location: index.php');
-      exit;
+      if ($row['can_login'] == 0) {
+        // User not approved
+        $login_err = "Your account is not approved yet";
+      } else {
+        // User authenticated
+        $_SESSION['email'] = $email;
+        header('Location: index.php');
+        exit;
+      }
     } else {
       // Invalid credentials
       $login_err = "Invalid email or password";
     }
-  } else {
-    // Invalid credentials
-    $login_err = "Invalid email or password";
   }
-
   // Close the database connection
   $db->close();
 }
+
 ?>
 
 <!DOCTYPE html>
