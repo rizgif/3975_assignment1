@@ -10,6 +10,12 @@ $db = getDatabaseConnection();
 createTables($db);   // Ensure database connection is available
 ?>
 
+<style>
+  .btn {
+    margin-bottom: 10px;
+  }
+</style>
+
 <div class="container text-center">
   <?php
   if (!isset($_SESSION['email'])) {
@@ -20,49 +26,68 @@ createTables($db);   // Ensure database connection is available
   <?php
   } else {
     // After login
-    $result = $db->query('SELECT role, isApproved FROM users WHERE email = "' . $_SESSION['email'] . '"');
+    $result = $db->query('SELECT role, can_access_transaction, can_access_bucket, can_access_report FROM users WHERE email = "' . $_SESSION['email'] . '"');
     $row = $result->fetchArray();
     $role = $row['role'];
-    $isApproved = $row['isApproved'];
+    $can_access_transaction = $row['can_access_transaction'];
+    $can_access_bucket = $row['can_access_bucket'];
+    $can_access_report = $row['can_access_report'];
   ?>
-    <div class="text-right">
+
+    <div class="text-center">
       <h4>Logged in as <?php echo $_SESSION['email']; ?></h4>
+
+      <!-- logout button -->
       <form action="logout.php" method="post" style="display: inline-block;">
         <button type="submit" class="btn btn-danger">Logout</button>
       </form>
-      <?php
-      // Show Manage Users button if the user is an admin
-      if ($role == 'admin') {
-      ?>
-        <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
-      <?php
-      }
-      // Show Go To Transactions button if the user is an admin or the user is approved
-      if ($role == 'admin' || $isApproved) {
-      ?>
-        <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
-        <!-- Add the Go To Buckets Data button -->
-        <button type="button" class="btn btn-primary" onclick="location.href='buckets.php'">Go To Buckets Data</button>
-        <!-- Modified File Upload Form for Admins or Approved Users to accept multiple files -->
-        <div class="upload-section mt-4">
-          <h5>Upload CSV Files:</h5>
-          <form action="upload.php" method="post" enctype="multipart/form-data">
-              Select CSV files to upload:
-              <input type="file" name="filesToUpload[]" id="filesToUpload" accept=".csv" multiple>
-              <input type="submit" value="Upload Files" name="submit" class="btn btn-secondary">
-          </form>
+
+      <!-- Manage Users button to admin -->
+      <?php if ($role == 'admin') { ?>
+        <div>
+          <button class="btn btn-info" onclick="window.location.href = 'admin.php'">Manage Users</button>
         </div>
-        <!-- Add the Generate Report button -->
-        <button type="button" class="btn btn-success mt-3" onclick="generateReport()">Reports</button>
-      <?php
-      }
-      ?>
+      <?php }
+
+      // Go To Transactions button to authorized users
+      if ($can_access_transaction) { ?>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="location.href='transactions.php'">Go To Transactions</button>
+        </div>
+
+        <!-- Add the Go To Buckets Data button -->
+      <?php }
+      if ($can_access_bucket) { ?>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="location.href='buckets.php'">Go To Buckets Data</button>
+        </div>
+      <?php } ?>
+
+      <!-- Add the Generate Report button to authorized users -->
+      <?php if ($can_access_report) { ?>
+        <div>
+          <button type="button" class="btn btn-success mt-3" onclick="generateReport()">Reports</button>
+        </div>
+      <?php } ?>
+
+      <!-- Modified File Upload Form for Admins or Approved Users to accept multiple files -->
+      <div class="upload-section mt-4">
+        <h5>Upload CSV Files:</h5>
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+          Select CSV files to upload and hit Upload Files button:<br>
+          <center>
+            <input type="file" name="filesToUpload[]" id="filesToUpload" accept=".csv" multiple>
+          </center><br>
+          <input type="submit" value="Upload Files" name="submit" class="btn btn-secondary">
+        </form>
+      </div>
+
+
     </div>
-  <?php
-  }
-  ?>
+  <?php } ?>
 </div>
 
+<!-- footer -->
 <footer class="footer bg-light mt-4">
   <div class="container">
     <div class="row">
