@@ -1,5 +1,6 @@
 <?php include("inc_header.php");
 $error_message = isset($_GET['error']) ? $_GET['error'] : '';
+$allowed_categories = ['Entertainment', 'Donations', 'Communication', 'Groceries', 'Car Insurance', 'Other', 'Gas Heating', 'Utilities'];
 ?>
 
 <h2>Add New Bucket</h2>
@@ -11,20 +12,24 @@ $error_message = isset($_GET['error']) ? $_GET['error'] : '';
         <?php echo htmlspecialchars($error_message); ?>
       </div>
     <?php endif; ?>
-    <form action="buckets_add_process.php" method="post"> <!-- Update the form action to "buckets_add_process.php" -->
+    <form action="buckets_add_process.php" method="post">
 
       <div class="form-group">
-        <label for="category" class="control-label">Category</label> <!-- Update the label for category -->
-        <input type="text" class="form-control" name="category" id="category" required /> <!-- Update the input name and id to "category" -->
+        <label for="category" class="control-label">Category</label>
+        <select class="form-control" name="category" id="category" required>
+          <?php foreach ($allowed_categories as $category): ?>
+            <option value="<?php echo htmlspecialchars($category); ?>"><?php echo htmlspecialchars($category); ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
 
       <div class="form-group">
-        <label for="name" class="control-label">Name</label> <!-- Update the label for name -->
-        <input type="text" class="form-control" name="name" id="name" required /> <!-- Update the input name and id to "name" -->
+        <label for="description" class="control-label">Description</label>
+        <input type="text" class="form-control" name="description" id="description" required />
       </div>
 
       <div class="form-group">
-        <a href="/buckets.php" class="btn btn-small btn-primary">&lt;&lt; BACK</a>
+        <a href="/buckets.php" class="btn btn-small btn-primary">&lt;&lt; Back</a>
         &nbsp;&nbsp;&nbsp;
         <input type="submit" value="Create" name="create" class="btn btn-success" />
       </div>

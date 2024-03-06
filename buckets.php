@@ -189,7 +189,7 @@ while ($row = $res->fetchArray()) {
         echo '<a href="buckets_delete.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
     }
     echo '</td>';
-    echo '</tr>';
+    echo "</tr>\n";
 }
 
 // Close the database connection

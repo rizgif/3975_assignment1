@@ -2,12 +2,20 @@
 $db = new SQLite3('mydatabase.db');
 
 if (isset($_POST['create'])) {
-  $category = SQLite3::escapeString($_POST['category']);
-  $description = SQLite3::escapeString($_POST['name']);
+  $category = $_POST['category']; // No need to escape this because it comes from a controlled set
+  $description = SQLite3::escapeString($_POST['description']); // Description should still be escaped or parameterized
 
-  $sql = "INSERT INTO buckets (category, description) VALUES ('$category', '$description')";
+  // Check if the category is allowed
+  if (!in_array($category, ['Entertainment', 'Donations', 'Communication', 'Groceries', 'Car Insurance', 'Other', 'Gas Heating', 'Utilities'])) {
+    header('Location: buckets_add.php?error=' . urlencode('Invalid category selected.'));
+    exit;
+  }
 
-  if ($db->exec($sql)) {
+  $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description)');
+  $stmt->bindValue(':category', $category, SQLITE3_TEXT);
+  $stmt->bindValue(':description', $description, SQLITE3_TEXT);
+
+  if ($stmt->execute()) {
     header('Location: buckets.php');
     exit;
   } else {
@@ -19,3 +27,4 @@ if (isset($_POST['create'])) {
   header('Location: buckets_add.php');
   exit;
 }
+?>
