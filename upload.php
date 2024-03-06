@@ -34,7 +34,10 @@ if (isset($_POST["submit"])) {
             echo "Sorry, your file was not uploaded: $name<br>";
         } else {
             if (move_uploaded_file($_FILES["filesToUpload"]["tmp_name"][$key], $target_file)) {
-                echo "The file " . htmlspecialchars($name) . " has been uploaded.<br>";
+                echo '<div style="text-align: center;">';
+                echo 'The file <strong>' . htmlspecialchars($name) . '</strong> has been uploaded.<br><br>';
+                echo '<a href="/" class="btn btn-primary ">&lt;&lt; BACK</a>';
+                echo '</div>';
                 
                 $newFileName = $target_dir . pathinfo($target_file, PATHINFO_FILENAME) . ".imported.csv";
                 rename($target_file, $newFileName);
@@ -50,14 +53,7 @@ if (isset($_POST["submit"])) {
                         $formattedDate = SQLite3::escapeString($formattedDate);
                         $description = SQLite3::escapeString($data[1]);
                         $amount = SQLite3::escapeString($data[2]);
-                        $category = '';
-
-                        // foreach ($keywordsAndCategories as $keyword => $categoryValue) {
-                        //     if (stripos($description, $keyword) !== false) {
-                        //         $category = $categoryValue;
-                        //         break;
-                        //     }
-                        // }
+                        $category = null;
 
                         if (!empty($amount)) {
                             $SQLinsert = "INSERT INTO transactions (date, description, amount)";
