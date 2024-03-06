@@ -5,9 +5,9 @@ $db = new SQLite3('mydatabase.db');
 if (isset($_POST['update'])) {
   $id = SQLite3::escapeString($_POST['id']);
   $category = SQLite3::escapeString($_POST['category']);
-  $name = SQLite3::escapeString($_POST['name']);
+  $description = SQLite3::escapeString($_POST['name']); // Changed 'name' to 'description'
 
-  $sql = "UPDATE buckets SET category = '$category', name = '$name' WHERE id = '$id'"; // Update the table name to 'buckets'
+  $sql = "UPDATE buckets SET category = '$category', description = '$description' WHERE id = '$id'"; // Changed 'name' to 'description'
 
   if ($db->exec($sql)) {
     header('Location: buckets.php?message=Bucket updated successfully'); // Update the redirection URL to 'buckets.php'
@@ -37,7 +37,7 @@ if (isset($_POST['update'])) {
   </div>
   <div class="form-group">
     <label for="name">Name:</label>
-    <input type="text" class="form-control" id="name" name="name" value="<?php echo $result['name']; ?>">
+    <input type="text" class="form-control" id="name" name="name" value="<?php echo $result['description']; ?>"> <!-- Changed 'name' to 'description' -->
   </div>
 
   <button type="submit" class="btn btn-warning" name="update">Update</button>
