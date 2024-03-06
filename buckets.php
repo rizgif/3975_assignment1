@@ -1,52 +1,138 @@
+<?php include 'inc_header.php'; ?>
 <?php
-include 'inc_header.php';
-
-// Include SQLite database connection
+// Include database connection function
 include 'database_connection.php';
 
-// Function to check if the buckets table is empty
-function is_buckets_table_empty($db) {
-    $count = $db->querySingle("SELECT count(*) FROM buckets");
-    return $count == 0;
+
+// Function to parse and insert CSV data into the buckets table
+function parseAndInsertCSV($csvFile) {
+    // Connect to the database
+    $db = getDatabaseConnection();
+
+    // Check if the database connection is successful
+    if (!$db) {
+        die("Database connection failed.");
+    }
+
+    // Keyword-category mapping
+    $keywordsAndCategories = array(
+        'ST JAMES RESTAURAT' => 'Entertainment',
+        'RED CROSS' => 'Donations',
+        'GATEWAY' => 'Communication',
+        'SAFEWAY' => 'Groceries',
+        'Subway' => 'Entertainment',
+        'PUR & SIMPLE RESTAUR' => 'Entertainment',
+        'REAL CDN SUPERS' => 'Groceries',
+        'ICBC' => 'Car Insurance',
+        'FORTISBC' => 'Gas Heating',
+        'BMO' => 'Other',
+        'WALMART' => 'Groceries',
+        'COSTCO' => 'Groceries',
+        'MCDONALDS' => 'Entertainment',
+        'WHITE SPOT RESTAURAN' => 'Entertainment',
+        'SHAW CABLE' => 'Utilities',
+        'CANADIAN TIRE' => 'Other',
+        'World Vision' => 'Donations',
+        '7-ELEVEN' => 'Other',
+        'TIM HORTONS' => 'Entertainment',
+        'ROGERS MOBILE' => 'Communication',
+        'O.D.P. FEE' => 'Other',
+        'MONTHLY ACCOUNT FEE' => 'Other'
+        // Add more keywords and corresponding categories as needed
+    );
+
+    // Open the CSV file
+    $file = fopen($csvFile, 'r');
+    if (!$file) {
+        die("Error opening file $csvFile");
+    }
+
+    // Prepare the SQL statement to insert data into the buckets table
+    $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description)');
+    if (!$stmt) {
+        die("Failed to prepare SQL statement.");
+    }
+
+    // Bind parameters
+    $stmt->bindParam(':category', $category);
+    $stmt->bindParam(':description', $description);
+
+
+    // Loop through each line in the CSV file
+    while (($line = fgetcsv($file)) !== false) {
+        // Parse CSV data
+        $description = $line[1];
+        $category = getCategoryForDescription($description, $keywordsAndCategories);
+
+        // Execute the prepared statement
+        if (!$stmt->execute()) {
+            die("Failed to execute SQL statement.");
+        }
+    }
+
+    // Close the file and database connection
+    fclose($file);
+    $db->close();
 }
 
-// Function to retrieve data from the buckets table
-function get_buckets_data($db) {
-    return $db->query('SELECT id, category, description FROM buckets');
+
+
+// Function to determine category for a description based on keywords
+function getCategoryForDescription($description, $keywordsAndCategories) {
+    foreach ($keywordsAndCategories as $keyword => $category) {
+        if (stripos($description, $keyword) !== false) {
+            return $category;
+        }
+    }
+    // If no category found, return 'Other' or handle it as needed
+    return 'Other';
 }
+
+// Call the function with the CSV file path
+parseAndInsertCSV('2023 02.csv');
 
 // Display buckets list
+echo '<div class="container">';
+echo '<h2 class="mt-3">List of Buckets</h2>';
+echo '<a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a>';
+echo '<a href="/" class="btn btn-primary">&lt;&lt; BACK</a>';
+echo '<table class="table table-striped">';
+echo '<thead>';
+echo '<tr>';
+echo '<th scope="col">ID</th>';
+echo '<th scope="col">Category</th>';
+echo '<th scope="col">Description</th>';
+echo '<th scope="col"></th>';
+echo '</tr>';
+echo '</thead>';
+echo '<tbody>';
+
+// Connect to the database
+$db = getDatabaseConnection();
+
+// Query the buckets table
+$res = $db->query('SELECT * FROM buckets');
+
+// Loop through the results and display each bucket
+while ($row = $res->fetchArray()) {
+    echo '<tr>';
+    echo '<td>' . $row['id'] . '</td>';
+    echo '<td>' . $row['category'] . '</td>';
+    echo '<td>' . $row['description'] . '</td>';
+    echo '<td>';
+    echo '<a href="buckets_update.php?id=' . $row['id'] . '" class="btn btn-warning">Update</a>';
+    echo '<a href="buckets_delete.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
+    echo '</td>';
+    echo '</tr>';
+}
+
+// Close the database connection
+$db->close();
+
+echo '</tbody>';
+echo '</table>';
+echo '</div>';
+
 ?>
-<div class="container">
-    <h2 class="mt-3">List of Buckets</h2>
-    <a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a>
-    <a href="/" class="btn btn-primary">&lt;&lt; BACK</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Category</th>
-                <th scope="col">Description</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $res = get_buckets_data($db);
-            while ($row = $res->fetchArray()) {
-                echo "<tr>\n";
-                echo "<td>{$row['id']}</td>";
-                echo "<td>{$row['category']}</td>";
-                echo "<td>{$row['description']}</td>";
-                echo "<td>
-                        <a href='buckets_update.php?id={$row['id']}' class='btn btn-warning'>Update</a>
-                        <a href='buckets_delete.php?id={$row['id']}' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this bucket?\")'>Delete</a>
-                      </td>";
-                echo "</tr>\n";
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
 
 <?php include 'inc_footer.php'; ?>

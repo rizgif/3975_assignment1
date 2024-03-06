@@ -32,6 +32,11 @@ foreach ($_FILES["filesToUpload"]["name"] as $key => $name) {
         if (move_uploaded_file($_FILES["filesToUpload"]["tmp_name"][$key], $target_file)) {
             echo "The file " . htmlspecialchars($name) . " has been uploaded.<br>";
             rename($target_file, $target_dir . pathinfo($target_file, PATHINFO_FILENAME) . ".imported.csv");
+            
+            // Parse and insert CSV data
+            include 'parseAndInsertCSV.php';
+            $importedFile = $target_dir . pathinfo($target_file, PATHINFO_FILENAME) . ".imported.csv";
+            parseAndInsertCSV($importedFile);
         } else {
             echo "Sorry, there was an error uploading your file: $name<br>";
         }

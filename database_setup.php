@@ -18,36 +18,26 @@ function createTables($db) {
         $db->exec('INSERT INTO users (email, password, role, isApproved) VALUES ("aa@aa.aa", "' . $hashedPassword . '", "admin", 1)');
     }
 
-    // Create transactions table
-    $db->exec('CREATE TABLE IF NOT EXISTS transactions (
-        id INTEGER PRIMARY KEY,
-        date TEXT,
-        description TEXT,
-        amount REAL
-    )');
+   // Create transactions table
+$db->exec('CREATE TABLE IF NOT EXISTS transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    description TEXT NOT NULL,
+    amount REAL NOT NULL,
+    category TEXT NOT NULL
+)');
 
-    // Define categories and corresponding keywords
-    $categoriesAndKeywords = [
-        'Groceries' => ['SAFEWAY', 'REAL CDN SUPERS', 'WALMART', 'COSTCO WHOLESAL'],
-        'Utilities' => ['FORTISBC GAS', 'SHAW CABLE', 'ROGERS MOBILE'],
-        'Donations' => ['RED CROSS', 'World Vision'],
-        'Eating Out' => ['ST JAMES RESTAURAT', 'Subway', 'PUR & SIMPLE RESTAUR', 'MCDONALDS', 'WHITE SPOT RESTAURAN', 'TIM HORTONS'],
-        'Health' => ['GATEWAY MSP'],
-        'Other' => ['ICBC INS', 'CANADIAN TIRE', '7-ELEVEN', 'O.D.P. FEE', 'MONTHLY ACCOUNT FEE']
-    ];
 
     // Create the buckets table
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        category TEXT,
-        description TEXT
+        category TEXT NOT NULL,
+        description TEXT NOT NULL
     )');
-
-    // Insert unique categories into the buckets table
-    foreach ($categoriesAndKeywords as $category => $keywords) {
-        $description = implode(', ', $keywords);
-        $db->exec('INSERT INTO buckets (category, description) VALUES ("' . $category . '", "' . $description . '")');
-    }
 }
+
+
+
+
 
 ?>
