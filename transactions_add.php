@@ -11,9 +11,9 @@ $error_message = isset($_GET['error']) ? $_GET['error'] : '';
         <?php echo htmlspecialchars($error_message); ?>
       </div>
     <?php endif; ?>
+    
+    <!-- Form to add a new transaction -->
     <form action="transactions_add_process.php" method="post">
-
-
       <div class="form-group">
         <label for="date" class="control-label">Date</label>
         <input type="date" class="form-control" name="date" id="date" required />
@@ -26,7 +26,7 @@ $error_message = isset($_GET['error']) ? $_GET['error'] : '';
 
       <div class="form-group">
         <label for="amount" class="control-label">Amount</label>
-        <input type="number" class="form-control" name="amount" id="amount" required />
+        <input type="number" class="form-control" name="amount" id="amount" step="0.01" required />
       </div>
 
       <div class="form-group">
