@@ -1,8 +1,16 @@
-<?php include 'inc_header.php'; ?>
 <?php
-// Include database connection function
+session_start();
+include 'inc_header.php';
 include 'database_connection.php';
 
+// Fetch the role of the user from the database to set the access to modify buckets
+if (isset($_SESSION['email'])) {
+    $stmt = $db->prepare('SELECT role FROM users WHERE email = :email');
+    $stmt->bindValue(':email', $_SESSION['email'], SQLITE3_TEXT);
+    $result = $stmt->execute();
+    $user = $result->fetchArray(SQLITE3_ASSOC);
+    $_SESSION['role'] = $user['role'];
+}
 
 // Function to parse and insert CSV data into the buckets table
 function parseAndInsertCSV($csvFile) {
@@ -89,7 +97,10 @@ function getCategoryForDescription($description, $keywordsAndCategories) {
 }
 
 echo '<div class="container">';
-echo '<a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a>';
+// Let only admin to add new bucket
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    echo '<a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a> ';
+}
 echo '<a href="/" class="btn btn-primary">&lt;&lt; BACK</a>';
 echo '</div>';
 ?>
@@ -102,10 +113,50 @@ $res->finalize();
 if ($row[0] == 0) {
     parseAndInsertCSV('2023 02.csv');
 }
+
+// Fetch all descriptions from the transactions table
+$transactionRes = $db->query('SELECT DISTINCT description FROM transactions');
+$transactionDescriptions = [];
+while ($row = $transactionRes->fetchArray()) {
+    $transactionDescriptions[] = $row['description'];
+}
+
+// Fetch all descriptions from the buckets table
+$bucketRes = $db->query('SELECT DISTINCT description FROM buckets');
+$bucketDescriptions = [];
+while ($row = $bucketRes->fetchArray()) {
+    $bucketDescriptions[] = $row['description'];
+}
+
+// Find descriptions that exist in transactions but not in buckets
+$uncategorizedDescriptions = [];
+foreach ($transactionDescriptions as $transaction) {
+    $found = false;
+    foreach ($bucketDescriptions as $bucket) {
+        if (stripos($transaction, $bucket) !== false) {
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $uncategorizedDescriptions[] = $transaction;
+    }
+}
 ?>
 
-
-
+<!-- Display uncategorized transaction list -->
+<div class="container">
+    <h3>List of uncategorized transactions</h3>
+    <?php
+    if (count($uncategorizedDescriptions) == 0) {
+        echo '<p>No uncategorized transactions found.</p>';
+    } else {
+        echo '<h5>The following transactions need to be categorized:</h5>';
+    } ?>
+    <?php foreach ($uncategorizedDescriptions as $transaction) : ?>
+        <p><?php echo $transaction ?></p>
+    <?php endforeach; ?>
+</div>
 
 <?php
 // Display buckets list
@@ -130,8 +181,13 @@ while ($row = $res->fetchArray()) {
     echo '<td>' . $row['category'] . '</td>';
     echo '<td>' . $row['description'] . '</td>';
     echo '<td>';
-    echo '<a href="buckets_update.php?id=' . $row['id'] . '" class="btn btn-warning">Update</a>';
-    echo '<a href="buckets_delete.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
+
+    // Check if the user's role is 'admin'
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        // Display the buttons only to admin
+        echo '<a href="buckets_update.php?id=' . $row['id'] . '" class="btn btn-warning">Update</a> ';
+        echo '<a href="buckets_delete.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
+    }
     echo '</td>';
     echo '</tr>';
 }
@@ -143,6 +199,4 @@ echo '</tbody>';
 echo '</table>';
 echo '</div>';
 
-?>
-
-<?php include 'inc_footer.php'; ?>
+include 'inc_footer.php'; ?>
