@@ -8,6 +8,7 @@ include 'database_connection.php';
 session_start();
 $db = getDatabaseConnection();
 createTables($db);   // Ensure database connection is available
+insertSampleUserData($db);
 ?>
 
 <style>

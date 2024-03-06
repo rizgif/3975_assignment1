@@ -1,4 +1,40 @@
 <?php include 'inc_header.php'; ?>
+<?php
+  include 'database_connection.php';
+
+  // Check if the transactions table is empty
+  $sql = "SELECT COUNT(*) FROM transactions";
+  $result = $db->query($sql);
+  $row = $result->fetchArray();
+  if ($row[0] == 0) {
+  // Open the CSV file
+  if (($handle = fopen("2023 02.csv", "r")) !== FALSE) {
+    $data = fgetcsv($handle, 1000, ",");
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+      $date = DateTime::createFromFormat('m/d/Y', $data[0]);
+      $formattedDate = $date ? $date->format('Y-m-d') : ''; // adjust date format to yy-mm-dd
+
+      $num = count($data);
+
+      $formattedDate = SQLite3::escapeString($formattedDate);
+      $description = SQLite3::escapeString($data[1]);
+      $amount = SQLite3::escapeString($data[2]);
+      $category = '';
+
+      if (!empty($amount)) {
+        $SQLinsert = "INSERT INTO transactions (date, description, amount)";
+        $SQLinsert .= " VALUES ";
+        $SQLinsert .= " ('$formattedDate', '$description', '$amount')";
+
+        $db->exec($SQLinsert);
+        $changes = $db->changes();
+      }
+    }
+    fclose($handle);
+  }
+  }
+
+?>
 
 <!-- display transactions list -->
 <div class="container">
