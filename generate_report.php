@@ -3,6 +3,13 @@ session_start();
 include 'inc_header.php';
 include 'database_connection.php';
 
+// Query the database to get distinct years from transactions
+$years_res = $db->query("SELECT DISTINCT strftime('%Y', date) AS year FROM transactions ORDER BY year DESC");
+$years = [];
+while ($year_row = $years_res->fetchArray(SQLITE3_ASSOC)) {
+    $years[] = $year_row['year'];
+}
+
 // Check if a specific year has been selected; if not, use the current year as default
 $selectedYear = isset($_POST['year']) ? $_POST['year'] : date('Y');
 
@@ -14,10 +21,11 @@ echo '<form action="generate_report.php" method="post">';
 echo '<div class="form-group">';
 echo '<label for="yearSelect">Select Year: </label>';
 echo '<select name="year" id="yearSelect" class="form-control" onchange="this.form.submit()">';
-// Populate the dropdown with options (you can adjust the range as needed)
-for ($year = 2020; $year <= date('Y'); $year++) {
+
+foreach ($years as $year) {
     echo "<option value='{$year}'" . ($selectedYear == $year ? " selected" : "") . ">{$year}</option>";
 }
+
 echo '</select>';
 echo '</div>';
 echo '</form>';

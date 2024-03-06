@@ -128,6 +128,8 @@ while ($row = $bucketRes->fetchArray()) {
     $bucketDescriptions[] = $row['description'];
 }
 
+
+
 // Find descriptions that exist in transactions but not in buckets
 $uncategorizedDescriptions = [];
 foreach ($transactionDescriptions as $transaction) {
@@ -146,6 +148,7 @@ foreach ($transactionDescriptions as $transaction) {
 
 <!-- Display uncategorized transaction list -->
 <div class="container">
+    
     <h3>List of uncategorized transactions</h3>
     <?php
     if (count($uncategorizedDescriptions) == 0) {
