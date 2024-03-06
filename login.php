@@ -11,9 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  // Hash the password
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
   // Query the database for the user
   $stmt = $db->prepare('SELECT * FROM users WHERE email=:email');
   $stmt->bindValue(':email', $email);
@@ -21,26 +18,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // Check if the user exists and the password is correct
   if ($result && $row = $result->fetchArray()) {
-    // Verify the hashed password
     if (password_verify($password, $row['password'])) {
       if ($row['can_login'] == 0) {
         // User not approved
         $login_err = "Your account is not approved yet";
       } else {
-        // User authenticated
-        $_SESSION['email'] = $email;
-        header('Location: index.php');
-        exit;
+        $_SESSION["loggedin"] = true;
+        $_SESSION["id"] = $row['id'];
+        $_SESSION["email"] = $email;
+
+        header("location: index.php");
       }
     } else {
-      // Invalid credentials
-      $login_err = "Invalid email or password";
+      $login_err = "The password is invalid.";
     }
+  } else {
+    $login_err = "Please check the email again.";
   }
-  // Close the database connection
   $db->close();
 }
-
 ?>
 
 <!DOCTYPE html>
