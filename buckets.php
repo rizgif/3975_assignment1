@@ -174,7 +174,7 @@ echo '</thead>';
 echo '<tbody>';
 
 // Loop through the results and display each bucket
-$res = $db->query('SELECT * FROM buckets');
+$res = $db->query('SELECT DISTINCT * FROM buckets');
 while ($row = $res->fetchArray()) {
     echo '<tr>';
     echo '<td>' . $row['id'] . '</td>';
