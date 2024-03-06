@@ -30,11 +30,12 @@ $db->exec('CREATE TABLE IF NOT EXISTS transactions (
     amount REAL NOT NULL
 )');
 
-    // Create the buckets table
+    // Create the buckets table and make category and description unique
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        category TEXT NOT NULL,
-        description TEXT NOT NULL
+        category TEXT NOT NULL ,
+        description TEXT NOT NULL 
+        
     )');
 }
 
