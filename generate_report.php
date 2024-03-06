@@ -68,7 +68,7 @@ echo '</table>';
 echo '<div id="piechart" style="width: 900px; height: 500px;"></div>';
 
 // Change the "Back" button to redirect to index.php
-echo '<a href="index.php" class="btn btn-primary">Back</a>';
+echo '<a href="index.php" class="btn btn-primary">&lt;&lt; Back</a>';
 
 echo '</div>';
 

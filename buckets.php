@@ -56,8 +56,7 @@ function parseAndInsertCSV($csvFile) {
     }
 
     // Prepare the SQL statement to insert data into the buckets table
-    $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description)');
-    if (!$stmt) {
+    $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description) ON DUPLICATE KEY UPDATE category=VALUES(category), description=VALUES(description)');    if (!$stmt) {
         die("Failed to prepare SQL statement.");
     }
 
@@ -171,35 +170,36 @@ echo '<tr>';
 echo '<th scope="col">ID</th>';
 echo '<th scope="col">Category</th>';
 echo '<th scope="col">Description</th>';
-echo '<th scope="col"></th>';
+echo '<th scope="col">Actions</th>';
 echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-// Loop through the results and display each bucket
-$res = $db->query('SELECT DISTINCT * FROM buckets');
+// Adjusted query to ensure only unique category and description pairs are shown
+$res = $db->query('SELECT id, category, description FROM buckets GROUP BY category, description ORDER BY id');
+
 while ($row = $res->fetchArray()) {
     echo '<tr>';
-    echo '<td>' . $row['id'] . '</td>';
-    echo '<td>' . $row['category'] . '</td>';
-    echo '<td>' . $row['description'] . '</td>';
+    echo '<td>' . htmlspecialchars($row['id']) . '</td>';
+    echo '<td>' . htmlspecialchars($row['category']) . '</td>';
+    echo '<td>' . htmlspecialchars($row['description']) . '</td>';
     echo '<td>';
 
     // Check if the user's role is 'admin'
     if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
         // Display the buttons only to admin
-        echo '<a href="buckets_update.php?id=' . $row['id'] . '" class="btn btn-warning">Update</a> ';
-        echo '<a href="buckets_delete.php?id=' . $row['id'] . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
+        echo '<a href="buckets_update.php?id=' . urlencode($row['id']) . '" class="btn btn-warning">Update</a> ';
+        echo '<a href="buckets_delete.php?id=' . urlencode($row['id']) . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this bucket?\')">Delete</a>';
     }
     echo '</td>';
-    echo "</tr>\n";
+    echo '</tr>';
 }
-
-// Close the database connection
-$db->close();
 
 echo '</tbody>';
 echo '</table>';
 echo '</div>';
 
-include 'inc_footer.php'; ?>
+$db->close();
+
+include 'inc_footer.php';
+?>
