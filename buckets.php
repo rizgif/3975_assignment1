@@ -88,14 +88,29 @@ function getCategoryForDescription($description, $keywordsAndCategories) {
     return 'Other';
 }
 
-// Call the function with the CSV file path
-parseAndInsertCSV('2023 02.csv');
+echo '<div class="container">';
+echo '<a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a>';
+echo '<a href="/" class="btn btn-primary">&lt;&lt; BACK</a>';
+echo '</div>';
+?>
 
+<?php
+// If bucket is empty, insert sample bucket data
+$res = $db->query('SELECT COUNT(*) FROM buckets');
+$row = $res->fetchArray();
+$res->finalize();
+if ($row[0] == 0) {
+    parseAndInsertCSV('2023 02.csv');
+}
+?>
+
+
+
+
+<?php
 // Display buckets list
 echo '<div class="container">';
 echo '<h2 class="mt-3">List of Buckets</h2>';
-echo '<a href="/buckets_add.php" class="btn btn-info">Add New Bucket</a>';
-echo '<a href="/" class="btn btn-primary">&lt;&lt; BACK</a>';
 echo '<table class="table table-striped">';
 echo '<thead>';
 echo '<tr>';
@@ -107,13 +122,8 @@ echo '</tr>';
 echo '</thead>';
 echo '<tbody>';
 
-// Connect to the database
-$db = getDatabaseConnection();
-
-// Query the buckets table
-$res = $db->query('SELECT * FROM buckets');
-
 // Loop through the results and display each bucket
+$res = $db->query('SELECT * FROM buckets');
 while ($row = $res->fetchArray()) {
     echo '<tr>';
     echo '<td>' . $row['id'] . '</td>';
