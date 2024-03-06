@@ -42,15 +42,13 @@ function insertSampleUserData($db) {
     $result = $db->query('SELECT COUNT(*) as count FROM users WHERE role = "user"');
     $row = $result->fetchArray();
     if ($row['count'] == 0) {
-        $password1 = password_hash('bbbbbb', PASSWORD_DEFAULT);
-        $password2 = password_hash('cccccc', PASSWORD_DEFAULT);
-        $password3 = password_hash('dddddd', PASSWORD_DEFAULT);
+        $password = password_hash('123123', PASSWORD_DEFAULT);
         $SQL_insert_data = 
         "INSERT INTO users (email, password, role, can_login, can_access_transaction, can_access_bucket, can_access_report) 
             VALUES 
-            ('bb@bb.bb', '$password1', 'user', 1, 1, 1, 1),
-            ('cc@cc.cc', '$password2', 'user', 0, 0, 0, 0),
-            ('dd@dd.dd', '$password3', 'user', 1, 0, 0, 1)";
+            ('bb@bb.bb', '$password', 'user', 1, 1, 1, 1),
+            ('cc@cc.cc', '$password', 'user', 0, 0, 0, 0),
+            ('dd@dd.dd', '$password', 'user', 1, 0, 0, 1)";
         $db->exec($SQL_insert_data);
     }
     }
