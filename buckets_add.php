@@ -13,7 +13,6 @@ $error_message = isset($_GET['error']) ? $_GET['error'] : '';
     <?php endif; ?>
     <form action="buckets_add_process.php" method="post"> <!-- Update the form action to "buckets_add_process.php" -->
 
-
       <div class="form-group">
         <label for="category" class="control-label">Category</label> <!-- Update the label for category -->
         <input type="text" class="form-control" name="category" id="category" required /> <!-- Update the input name and id to "category" -->

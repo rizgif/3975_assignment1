@@ -5,6 +5,7 @@ if (isset($_POST['create'])) {
   $date = SQLite3::escapeString($_POST['date']);
   $description = SQLite3::escapeString($_POST['description']);
   $amount = SQLite3::escapeString($_POST['amount']);
+  // $category = SQLite3::escapeString($_POST['category']); 
 
   $sql = "INSERT INTO transactions (date, description, amount) VALUES ('$date', '$description', '$amount')";
 

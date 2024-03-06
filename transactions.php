@@ -1,37 +1,5 @@
 <?php include 'inc_header.php'; ?>
 
-<!-- load csv file -->
-<?php
-$count = $db->querySingle("SELECT count(*) from transactions");
-
-if ($count == 0) {
-  $row = 1;
-  if (($handle = fopen("2023 02.csv", "r")) !== FALSE) {
-    $data = fgetcsv($handle, 1000, ",");
-    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-      $date = DateTime::createFromFormat('m/d/Y', $data[0]); 
-      $formattedDate = $date ? $date->format('Y-m-d') : ''; // adjust date format to yy-mm-dd
-
-      $num = count($data);
-      $row++;
-
-      $formattedDate = SQLite3::escapeString($formattedDate);
-      $description = SQLite3::escapeString($data[1]);
-      $amount = SQLite3::escapeString($data[2]);
-
-      if (!empty($amount)) {
-        $SQLinsert = "INSERT INTO transactions (date, description, amount)";
-        $SQLinsert .= " VALUES ";
-        $SQLinsert .= " ('$formattedDate', '$description', '$amount')";
-
-        $db->exec($SQLinsert);
-        $changes = $db->changes();
-      }
-    }
-  }
-}
-?>
-
 <!-- display transactions list -->
 <div class="container">
   <h2 class="mt-3">List of transactions</h2>

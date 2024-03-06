@@ -10,7 +10,10 @@ $result = $db->query('SELECT * FROM users WHERE role = "user"');
       <tr>
         <th>Email</th>
         <th>Role</th>
-        <th>Access</th>
+        <th>Login approval</th>
+        <th>Transactions</th>
+        <th>Buckets</th>
+        <th>Report</th>
       </tr>
     </thead>
     <tbody>
@@ -22,9 +25,35 @@ $result = $db->query('SELECT * FROM users WHERE role = "user"');
           <td><?php echo $row['email']; ?></td>
           <td><?php echo $row['role']; ?></td>
           <td>
-            <form action="approve_access.php" method="post">
+            <!-- Login approval -->
+            <form action="access_update.php" method="post">
               <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
-              <input type="checkbox" name="isApproved" value="1" <?php echo ($row['isApproved'] == 1) ? 'checked' : ''; ?> onchange="this.form.submit()">
+              <input type="hidden" name="access_type" value="can_login">
+              <input type="checkbox" name="access_value" value="1" <?php echo ($row['can_login'] == 1) ? 'checked' : ''; ?> onchange="this.form.submit()">
+            </form>
+          </td>
+          <td>
+            <!-- Transactions access control -->
+            <form action="access_update.php" method="post">
+              <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
+              <input type="hidden" name="access_type" value="can_access_transaction">
+              <input type="checkbox" name="access_value" value="1" <?php echo ($row['can_access_transaction'] == 1) ? 'checked' : ''; ?> onchange="this.form.submit()">
+            </form>
+          </td>
+          <!-- Buckets access control -->
+          <td>
+            <form action="access_update.php" method="post">
+              <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
+              <input type="hidden" name="access_type" value="can_access_bucket">
+              <input type="checkbox" name="access_value" value="1" <?php echo ($row['can_access_bucket'] == 1) ? 'checked' : ''; ?> onchange="this.form.submit()">
+            </form>
+          </td>
+          <!-- Report access control -->
+          <td>
+            <form action="access_update.php" method="post">
+              <input type="hidden" name="user_id" value="<?php echo $row['id']; ?>">
+              <input type="hidden" name="access_type" value="can_access_report">
+              <input type="checkbox" name="access_value" value="1" <?php echo ($row['can_access_report'] == 1) ? 'checked' : ''; ?> onchange="this.form.submit()">
             </form>
           </td>
         </tr>
