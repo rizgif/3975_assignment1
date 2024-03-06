@@ -9,10 +9,13 @@ $email_err = $password_err = $confirm_password_err = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+  $SQL_check_email = "SELECT COUNT(*) FROM users WHERE email = '$email'";
+  $count = $db->querySingle($SQL_check_email);
   // Validate email
   if (empty(trim($_POST["email"]))) {
     $email_err = "Please enter an email.";
+  } else if ($count > 0) {
+    $email_err = "This email is already taken.";
   } else {
     $email = trim($_POST["email"]);
   }
