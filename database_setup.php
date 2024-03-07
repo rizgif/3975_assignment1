@@ -34,7 +34,10 @@ $db->exec('CREATE TABLE IF NOT EXISTS transactions (
     $db->exec('CREATE TABLE IF NOT EXISTS buckets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         category TEXT NOT NULL ,
-        description TEXT NOT NULL UNIQUE
+        description TEXT NOT NULL UNIQUE,
+        UNIQUE(description) ON CONFLICT REPLACE
+
+
         
     )');
 }

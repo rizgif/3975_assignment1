@@ -14,8 +14,6 @@ if (isset($_SESSION['email'])) {
 
 // Function to parse and insert CSV data into the buckets table
 function parseAndInsertCSV($csvFile, $db) {
-  
-
     // Check if the database connection is successful
     if (!$db) {
         die("Database connection failed.");
@@ -55,22 +53,17 @@ function parseAndInsertCSV($csvFile, $db) {
     }
 
     // Prepare the SQL statement to insert data into the buckets table
-    $stmt = $db->prepare('INSERT OR REPLACE INTO buckets (category, description) VALUES (:category, :description)');
-
-    
-
-    // Bind parameters
-    $category = ''; // Declare the variable before binding it to the statement
-    $stmt->bindParam(':category', $category);
-    $description = ''; // Declare the variable before binding it to the statement
-    $stmt->bindParam(':description', $description);
-
+    $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description)');
 
     // Loop through each line in the CSV file
     while (($line = fgetcsv($file)) !== false) {
         // Parse CSV data
         $description = $line[1];
         $category = getCategoryForDescription($description, $keywordsAndCategories);
+
+        // Bind parameters
+        $stmt->bindParam(':category', $category, SQLITE3_TEXT);
+        $stmt->bindParam(':description', $description, SQLITE3_TEXT);
 
         // Execute the prepared statement
         if (!$stmt->execute()) {
