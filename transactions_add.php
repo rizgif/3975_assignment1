@@ -1,5 +1,19 @@
-<?php include("inc_header.php");
-$error_message = isset($_GET['error']) ? $_GET['error'] : '';
+<?php 
+  session_start();
+  $db = new SQLite3('mydatabase.db');
+  $error_message = isset($_GET['error']) ? $_GET['error'] : '';
+  $stmt = $db->prepare('SELECT can_access_transaction FROM users WHERE email = :email');
+  $stmt->bindValue(':email', $_SESSION['email'], SQLITE3_TEXT);
+  $result = $stmt->execute();
+  $row = $result->fetchArray();
+  $can_access_transaction = $row['can_access_transaction'];
+
+  // Check if the user can access  the transaction page
+  if ($can_access_transaction != 1) {
+    header('Location: /access_error.php');
+    exit;
+  }
+  include("inc_header.php");
 ?>
 
 <h2>Add New Transaction</h2>

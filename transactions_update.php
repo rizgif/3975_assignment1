@@ -1,5 +1,4 @@
 <?php
-include("inc_header.php");
 $db = new SQLite3('mydatabase.db');
 
 if (isset($_POST['update'])) {
@@ -24,6 +23,7 @@ if (isset($_POST['update'])) {
   header('Location: transactions.php');
   exit;
 }
+include("inc_header.php");
 ?>
 
 

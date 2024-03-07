@@ -1,6 +1,21 @@
-<?php include("inc_header.php");
+<?php 
+session_start();
+include("inc_header.php");
 $error_message = isset($_GET['error']) ? $_GET['error'] : '';
 $allowed_categories = ['Entertainment', 'Donations', 'Communication', 'Groceries', 'Car Insurance', 'Other', 'Gas Heating', 'Utilities'];
+
+$stmt = $db->prepare('SELECT can_access_bucket FROM users WHERE email = :email');
+$stmt->bindValue(':email', $_SESSION['email'], SQLITE3_TEXT);
+$result = $stmt->execute();
+$row = $result->fetchArray();
+$can_access_bucket = $row['can_access_bucket'];
+
+// Check if the user can access the bucket page
+if ($can_access_bucket != 1) {
+  header('Location: /access_error.php');
+  exit;
+}
+
 ?>
 
 <h2>Add New Bucket</h2>

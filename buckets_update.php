@@ -1,5 +1,4 @@
 <?php
-include("inc_header.php");
 $db = new SQLite3('mydatabase.db');
 $allowed_categories = ['Entertainment', 'Donations', 'Communication', 'Groceries', 'Car Insurance', 'Other', 'Gas Heating', 'Utilities'];
 
@@ -34,7 +33,7 @@ if (isset($_POST['update'])) {
     header('Location: buckets.php');
     exit;
 }
-
+include("inc_header.php");
 ?>
 
 <h2>Update Bucket</h2>

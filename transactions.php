@@ -1,7 +1,6 @@
-<?php include 'inc_header.php'; ?>
 <?php
   include 'database_connection.php';
-
+  $db = getDatabaseConnection();
   // Check if the transactions table is empty
   $sql = "SELECT COUNT(*) FROM transactions";
   $result = $db->query($sql);
@@ -33,7 +32,7 @@
     fclose($handle);
   }
   }
-
+include 'inc_header.php';
 ?>
 
 <!-- display transactions list -->

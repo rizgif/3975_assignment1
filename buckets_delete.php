@@ -1,6 +1,5 @@
 <?php
 // include header
-include("inc_header.php");
 $db = new SQLite3('mydatabase.db');
 
 if (isset($_GET['id'])) {
@@ -23,5 +22,4 @@ if (isset($_GET['id'])) {
   header('Location: buckets.php'); // Update the redirection URL to 'buckets.php'
   exit;
 }
-include("inc_footer.php");
 ?>
