@@ -1,9 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
-
 include 'inc_header.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -41,14 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $db->close();
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       font: 14px sans-serif;
@@ -59,9 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       padding: 20px;
     }
   </style>
-</head>
-
-<body>
   <div class="wrapper">
     <h2>Login</h2>
     <p></p>
@@ -85,8 +70,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
     </form>
   </div>
-</body>
-
-</html>
-
 <?php include 'inc_footer.php'; ?>
