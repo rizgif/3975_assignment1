@@ -124,10 +124,8 @@ while ($row = $transactionRes->fetchArray()) {
 $bucketRes = $db->query('SELECT DISTINCT description FROM buckets');
 $bucketDescriptions = [];
 while ($row = $bucketRes->fetchArray()) {
-    $bucketDescriptions[] = $row['description'];
+    $bucketDescriptions[] = trim($row['description']);
 }
-
-
 
 // Find descriptions that exist in transactions but not in buckets
 $uncategorizedDescriptions = [];
