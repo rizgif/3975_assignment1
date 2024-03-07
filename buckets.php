@@ -55,8 +55,9 @@ function parseAndInsertCSV($csvFile) {
         die("Error opening file $csvFile");
     }
 
-    // Prepare the SQL statement to insert data into the buckets table
-    $stmt = $db->prepare('INSERT INTO buckets (category, description) VALUES (:category, :description) ON DUPLICATE KEY UPDATE category=VALUES(category), description=VALUES(description)');    if (!$stmt) {
+    // Prepare the SQL statement to insert data into the buckets table with INSERT OR IGNORE to skip duplicates
+    $stmt = $db->prepare('INSERT OR IGNORE INTO buckets (category, description) VALUES (:category, :description)');
+    if (!$stmt) {
         die("Failed to prepare SQL statement.");
     }
 
