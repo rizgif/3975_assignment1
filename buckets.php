@@ -55,11 +55,10 @@ function parseAndInsertCSV($csvFile) {
         die("Error opening file $csvFile");
     }
 
-    // Prepare the SQL statement to insert data into the buckets table with INSERT OR IGNORE to skip duplicates
-    $stmt = $db->prepare('INSERT OR IGNORE INTO buckets (category, description) VALUES (:category, :description)');
-    if (!$stmt) {
-        die("Failed to prepare SQL statement.");
-    }
+    // Prepare the SQL statement to insert data into the buckets table
+    $stmt = $db->prepare('INSERT OR REPLACE INTO buckets (category, description) VALUES (:category, :description)');
+
+    
 
     // Bind parameters
     $stmt->bindParam(':category', $category);
@@ -125,8 +124,10 @@ while ($row = $transactionRes->fetchArray()) {
 $bucketRes = $db->query('SELECT DISTINCT description FROM buckets');
 $bucketDescriptions = [];
 while ($row = $bucketRes->fetchArray()) {
-    $bucketDescriptions[] = trim($row['description']);
+    $bucketDescriptions[] = $row['description'];
 }
+
+
 
 // Find descriptions that exist in transactions but not in buckets
 $uncategorizedDescriptions = [];
@@ -175,7 +176,7 @@ echo '</thead>';
 echo '<tbody>';
 
 // Adjusted query to ensure only unique category and description pairs are shown
-$res = $db->query('SELECT id, category, description FROM buckets GROUP BY category, description ORDER BY id');
+$res = $db->query('SELECT id, category, description FROM buckets GROUP BY category, description ORDER BY id ');
 
 while ($row = $res->fetchArray()) {
     echo '<tr>';
