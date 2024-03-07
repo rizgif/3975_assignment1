@@ -1,5 +1,5 @@
 <?php
-include 'inc_header.php';
+$db = new SQLite3('mydatabase.db');
 // Include config file
 include_once "database_setup.php";
 
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       // Attempt to execute the prepared statement
       if ($stmt->execute()) {
         // Redirect to login page
-        header("location: login.php");
+        header("location: /");
         exit();
       } else {
         echo "Oops! Something went wrong. Please try again later.";
@@ -72,15 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 }
+include 'inc_header.php'; 
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Sign Up</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body {
       font: 14px sans-serif;
@@ -91,9 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       padding: 20px;
     }
   </style>
-</head>
-
-<body>
   <div class="wrapper">
     <h2>Sign Up</h2>
     <p>Please fill this form to create an account.</p>
@@ -119,8 +109,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <p>Already have an account? <a href="login.php">Login here</a>.</p>
     </form>
   </div>
-</body>
-
-</html>
-
 <?php include 'inc_footer.php'; ?>
