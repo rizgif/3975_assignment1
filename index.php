@@ -1,11 +1,11 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+session_start();
+
 
 include 'inc_header.php';
 include 'database_connection.php';
 
-session_start();
+
 $db = getDatabaseConnection();
 createTables($db);   // Ensure database connection is available
 insertSampleUserData($db);
