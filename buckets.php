@@ -80,7 +80,7 @@ function parseAndInsertCSV($csvFile, $db) {
 
     // Close the file and database connection
     fclose($file);
-    $db->close();
+    // $db->close();
 }
 
 
@@ -125,7 +125,7 @@ while ($row = $transactionRes->fetchArray()) {
 $bucketRes = $db->query('SELECT DISTINCT description FROM buckets');
 $bucketDescriptions = [];
 while ($row = $bucketRes->fetchArray()) {
-    $bucketDescriptions[] = $row['description'];
+    $bucketDescriptions[] = trim($row['description']);
 }
 
 
