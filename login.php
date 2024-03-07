@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'inc_header.php';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Connect to SQLite database
@@ -36,6 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   $db->close();
 }
+
+include 'inc_header.php';
 ?>
   <style>
     body {
