@@ -88,6 +88,12 @@ insertSampleUserData($db);
   <?php } ?>
 </div>
 
+<?php 
+$db->close();
+include 'inc_footer.php'; 
+?>
+
+
 <!-- footer -->
 <footer class="footer bg-light mt-4">
   <div class="container">

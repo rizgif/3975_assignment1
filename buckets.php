@@ -13,9 +13,8 @@ if (isset($_SESSION['email'])) {
 }
 
 // Function to parse and insert CSV data into the buckets table
-function parseAndInsertCSV($csvFile) {
-    // Connect to the database
-    $db = getDatabaseConnection();
+function parseAndInsertCSV($csvFile, $db) {
+  
 
     // Check if the database connection is successful
     if (!$db) {
@@ -61,7 +60,9 @@ function parseAndInsertCSV($csvFile) {
     
 
     // Bind parameters
+    $category = ''; // Declare the variable before binding it to the statement
     $stmt->bindParam(':category', $category);
+    $description = ''; // Declare the variable before binding it to the statement
     $stmt->bindParam(':description', $description);
 
 
@@ -110,7 +111,7 @@ $res = $db->query('SELECT COUNT(*) FROM buckets');
 $row = $res->fetchArray();
 $res->finalize();
 if ($row[0] == 0) {
-    parseAndInsertCSV('2023 02.csv');
+    parseAndInsertCSV('2023 02.csv', $db);
 }
 
 // Fetch all descriptions from the transactions table
@@ -176,7 +177,7 @@ echo '</thead>';
 echo '<tbody>';
 
 // Adjusted query to ensure only unique category and description pairs are shown
-$res = $db->query('SELECT id, category, description FROM buckets GROUP BY category, description ORDER BY id ');
+$res = $db->query('SELECT id, category, description FROM buckets GROUP BY category, description ORDER BY id');
 
 while ($row = $res->fetchArray()) {
     echo '<tr>';
