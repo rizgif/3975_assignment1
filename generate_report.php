@@ -20,16 +20,17 @@ echo '<h2>Expenses Report</h2>';
 echo '<form action="generate_report.php" method="post">';
 echo '<div class="form-group">';
 echo '<label for="yearSelect">Select Year: </label>';
-echo '<select name="year" id="yearSelect" class="form-control" onchange="this.form.submit()">';
-
+echo '<select name="year" id="yearSelect" class="form-control">';
 foreach ($years as $year) {
     echo "<option value='{$year}'" . ($selectedYear == $year ? " selected" : "") . ">{$year}</option>";
 }
-
+echo '</select><br>';
+echo '<button type="submit" class="btn btn-primary">Submit</button>';
 echo '</select>';
 echo '</div>';
 echo '</form>';
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 echo '<table class="table">';
 echo '<thead>';
 echo '<tr>';
@@ -66,11 +67,12 @@ echo '</table>';
 
 // Add Google Charts to create a pie chart
 echo '<div id="piechart" style="width: 900px; height: 500px;"></div>';
-
+}
 // Change the "Back" button to redirect to index.php
 echo '<a href="index.php" class="btn btn-primary">&lt;&lt; Back</a>';
 
 echo '</div>';
+
 
 include 'inc_footer.php';
 ?>
